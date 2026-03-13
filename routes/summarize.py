@@ -31,31 +31,11 @@ def summarize(payload: SummarizeRequest) -> SummarizeResponse:
         client = OpenAI(api_key=OPENAI_API_KEY)
         completion = client.chat.completions.create(
             model=OPENAI_MODEL,
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are a precise text summarization assistant. "
-                        "Your goal is to compress text while preserving maximum factual information. "
-                        "Always prioritize retaining key entities (people, organizations, places), "
-                        "dates, numbers, metrics, decisions, and outcomes. "
-                        "Remove redundancy, filler words, and less important descriptions, "
-                        "but never omit critical facts."
-                    ),
-                },
+        messages=[
+                {"role": "system", "content": "You understand the text and summarize text clearly and concisely."},
                 {
                     "role": "user",
-                    "content": (
-                        f"Summarize the text below in **no more than {payload.max_length} characters**.\n\n"
-                        "Rules:\n"
-                        "1. Preserve important facts, names, numbers, and outcomes.\n"
-                        "2. Prefer concise phrasing and information-dense wording.\n"
-                        "3. Do not invent or infer information not present in the text.\n"
-                        "4. If necessary, shorten wording but keep all critical details.\n"
-                        "5. Ensure the final output does not exceed the character limit.\n\n"
-                        "Text:\n"
-                        f"{payload.text}"
-                    ),
+                    "content": f"Summarize this text in at most {payload.max_length} characters:\n\n{payload.text}",
                 },
             ],
             temperature=0.2,
