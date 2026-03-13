@@ -31,13 +31,20 @@ def summarize(payload: SummarizeRequest) -> SummarizeResponse:
         client = OpenAI(api_key=OPENAI_API_KEY)
         completion = client.chat.completions.create(
             model=OPENAI_MODEL,
-        messages=[
-                {"role": "system", "content": "You understand the text and summarize text clearly and concisely."},
-                {
-                    "role": "user",
-                    "content": f"Summarize this text in at most {payload.max_length} characters:\n\n{payload.text}",
-                },
-            ],
+        messages = [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant"
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"Please summarize the following text briefly. "
+                    f"Try to make it short but also explain things clearly.\n\n"
+                    f"{payload.text}"
+                )
+            },
+         ],
             temperature=0.2,
         )
         summary = (completion.choices[0].message.content or "").strip()
